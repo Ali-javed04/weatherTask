@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Chart from "chart.js/auto";
-import apiKeys from "../../services/apiKeys";
 import LineChart from "../lineChart/lineChart"
 import fetchWeatherData from '../../services/weatherapi';
+import fetchDayWeatherData from '../../services/dayweatherapi';
+
+
 import { CategoryScale } from "chart.js";
 Chart.register(CategoryScale);
 
@@ -20,16 +21,12 @@ function Home(props) {
   const search = (city) => {
     dayforcast(query)
     setCheckcent(unitConveration)
-    axios
-      .get(
-        `${apiKeys.base}weather?q=${
-          city != "[object Object]" ? city : query
-        }&units=${unitConveration}&APPID=${apiKeys.key}`
-      )
+    fetchDayWeatherData(city,unitConveration,query)
       .then((response) => {
+          
         setWeather(response.data);
       })
-      .catch(function (error) {
+      .catch( (error) =>{
         console.log(error);
         setWeather("");
         setError({ message: "Not Found", query: query });
